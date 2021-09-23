@@ -43,42 +43,41 @@ double getDurability()
     
     auto temp = (*toolParts)[0]->parts;
     
-    
     for(int i = 0; i < toolParts->size(); i++)
         for(TOOLPART part : (*toolParts)[i]->parts)
             if(part == TOOLPART::HEAD)
             {
-                headSum += materialToolParts[curTool.materials[i]][TOOLPART::HEAD].first[TOOLPROPERTIES::DURABILITY];
+                headSum += materialToolParts[curTool.materials[i]][part].first[TOOLPROPERTIES::DURABILITY];
                 headCount++;
             }
             else if(part == TOOLPART::EXTRA)
             {
-                extraSum += materialToolParts[curTool.materials[i]][TOOLPART::HEAD].first[TOOLPROPERTIES::DURABILITY];
+                extraSum += materialToolParts[curTool.materials[i]][part].first[TOOLPROPERTIES::DURABILITY];
                 extraCount++;
             }
             else if(part == TOOLPART::HANDLE)
             {
-                handleSum += materialToolParts[curTool.materials[i]][TOOLPART::HANDLE].first[TOOLPROPERTIES::DURABILITY];
+                handleSum += materialToolParts[curTool.materials[i]][part].first[TOOLPROPERTIES::DURABILITY];
                 handleCount++;
-                modifierSum += materialToolParts[curTool.materials[i]][TOOLPART::HANDLE].first[TOOLPROPERTIES::DURABILITYMODIFIER];
+                modifierSum += materialToolParts[curTool.materials[i]][part].first[TOOLPROPERTIES::DURABILITYMODIFIER];
                 modifierCount++;
             }
             else if(part == TOOLPART::FLETCHLING)
             {
-                fletchlingSum += materialToolParts[curTool.materials[i]][TOOLPART::FLETCHLING].first[TOOLPROPERTIES::DURABILITYMODIFIER];
+                fletchlingSum += materialToolParts[curTool.materials[i]][part].first[TOOLPROPERTIES::DURABILITYMODIFIER];
                 fletchlingCount++;
             }
             else if(part == TOOLPART::SHAFT)
             {
-                shaftSum += materialToolParts[curTool.materials[i]][TOOLPART::SHAFT].first[TOOLPROPERTIES::DURABILITYMODIFIER];
+                shaftSum += materialToolParts[curTool.materials[i]][part].first[TOOLPROPERTIES::DURABILITYMODIFIER];
                 shaftCount++;
-                shaftBonusSum += materialToolParts[curTool.materials[i]][TOOLPART::SHAFT].first[TOOLPROPERTIES::BONUSAMMO];
+                shaftBonusSum += materialToolParts[curTool.materials[i]][part].first[TOOLPROPERTIES::BONUSAMMO];
                 shaftBonusCount++;
             }
             else if(part == TOOLPART::BOW) {}  //no durability stat
             else if(part == TOOLPART::BOWSTRING)
             {
-                bowstringSum += materialToolParts[curTool.materials[i]][TOOLPART::BOWSTRING].first[TOOLPROPERTIES::DURABILITYMODIFIER];
+                bowstringSum += materialToolParts[curTool.materials[i]][part].first[TOOLPROPERTIES::DURABILITYMODIFIER];
                 bowstringCount++;
             }
             else
@@ -92,6 +91,11 @@ double getDurability()
     double shaftAvg = shaftCount ? (shaftSum/shaftCount) : 1;
     double shaftBonusAvg = shaftBonusCount ? (shaftBonusSum/shaftBonusCount) : 0;
     double bowstringAvg = bowstringCount ? (bowstringSum/bowstringCount) : 1;
+    
+    cout << headAvg << endl;
+    cout << extraAvg << endl;
+    cout << handleAvg << endl;
+    cout << modifierAvg << endl;
     
     double durability = ((headAvg + extraAvg) * modifierAvg * fletchlingAvg * shaftAvg + handleAvg + shaftBonusAvg) * bowstringAvg;
     
