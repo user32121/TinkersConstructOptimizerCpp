@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <set>
+#include <cmath>
 
 #include "main.h"
 
@@ -10,33 +11,293 @@ using namespace std;
 
 //main parameters
 TOOL tool;
-vector<namedToolPart> toolParts;
+vector<namedToolPart*>* toolParts;
 OPTIMIZATIONTARGET target;
-set<MATERIAL> materials;
+vector<MATERIAL> materials;
 
 //results
 toolResult curTool, bestTool;
+pair<double,double> bestStat = {-1,-1};  //(base, bonus)
 
 //options
 bool useEmbossment = false;
 bool verbose = false;
+//environment
+double temperature = 0.8;
+double rainfall = 0;
+bool handBreakable = false;
+double playerHealth = 1;
+int blockLevel = -1;
+bool inTwilight;
+
+double getDurability()
+{
+    double headSum = 0, headCount = 0;  //head durability
+    double extraSum = 0, extraCount = 0;  //extra durability
+    double handleSum = 0, handleCount = 0;  //handle durability
+    double modifierSum = 0, modifierCount = 0;  //handle multiplier
+    double fletchlingSum = 0, fletchlingCount = 0;  //fletchling multiplier
+    double shaftSum = 0, shaftCount = 0;  //shaft multiplier
+    double shaftBonusSum = 0, shaftBonusCount = 0;  //shaft bonus
+    double bowstringSum = 0, bowstringCount = 0;  //bowstring multiplier
+    
+    auto temp = (*toolParts)[0]->parts;
+    
+    
+    for(int i = 0; i < toolParts->size(); i++)
+        for(TOOLPART part : (*toolParts)[i]->parts)
+            if(part == TOOLPART::HEAD)
+            {
+                headSum += materialToolParts[curTool.materials[i]][TOOLPART::HEAD].first[TOOLPROPERTIES::DURABILITY];
+                headCount++;
+            }
+            else if(part == TOOLPART::EXTRA)
+            {
+                extraSum += materialToolParts[curTool.materials[i]][TOOLPART::HEAD].first[TOOLPROPERTIES::DURABILITY];
+                extraCount++;
+            }
+            else if(part == TOOLPART::HANDLE)
+            {
+                handleSum += materialToolParts[curTool.materials[i]][TOOLPART::HANDLE].first[TOOLPROPERTIES::DURABILITY];
+                handleCount++;
+                modifierSum += materialToolParts[curTool.materials[i]][TOOLPART::HANDLE].first[TOOLPROPERTIES::DURABILITYMODIFIER];
+                modifierCount++;
+            }
+            else if(part == TOOLPART::FLETCHLING)
+            {
+                fletchlingSum += materialToolParts[curTool.materials[i]][TOOLPART::FLETCHLING].first[TOOLPROPERTIES::DURABILITYMODIFIER];
+                fletchlingCount++;
+            }
+            else if(part == TOOLPART::SHAFT)
+            {
+                shaftSum += materialToolParts[curTool.materials[i]][TOOLPART::SHAFT].first[TOOLPROPERTIES::DURABILITYMODIFIER];
+                shaftCount++;
+                shaftBonusSum += materialToolParts[curTool.materials[i]][TOOLPART::SHAFT].first[TOOLPROPERTIES::BONUSAMMO];
+                shaftBonusCount++;
+            }
+            else if(part == TOOLPART::BOW) {}  //no durability stat
+            else if(part == TOOLPART::BOWSTRING)
+            {
+                bowstringSum += materialToolParts[curTool.materials[i]][TOOLPART::BOWSTRING].first[TOOLPROPERTIES::DURABILITYMODIFIER];
+                bowstringCount++;
+            }
+            else
+                throw "Not Implemented Exception (part "+toolPartToString[part]+")";
+    
+    double headAvg = headCount ? (headSum/headCount) : 0;
+    double extraAvg = extraCount ? (extraSum/extraCount) : 0;
+    double handleAvg = handleCount ? (handleSum/handleCount) : 0;
+    double modifierAvg = modifierCount ? (modifierSum/modifierCount) : 1;
+    double fletchlingAvg = fletchlingCount ? (fletchlingSum/fletchlingCount) : 1;
+    double shaftAvg = shaftCount ? (shaftSum/shaftCount) : 1;
+    double shaftBonusAvg = shaftBonusCount ? (shaftBonusSum/shaftBonusCount) : 0;
+    double bowstringAvg = bowstringCount ? (bowstringSum/bowstringCount) : 1;
+    
+    double durability = ((headAvg + extraAvg) * modifierAvg * fletchlingAvg * shaftAvg + handleAvg + shaftBonusAvg) * bowstringAvg;
+    
+    //tool modifiers
+    auto it = toolToToolModifiers[tool].find(TOOLPROPERTIES::DURABILITY);
+    if(it != toolToToolModifiers[tool].end())
+        for(pair<char,int> modifier : it->second)
+            if(modifier.first == '=')
+                durability = modifier.second;
+            else if(modifier.first == '+')
+                durability += modifier.second;
+            else if(modifier.first == '*')
+                durability *= modifier.second;
+            else
+                throw string("Not Implemented Exception (")+modifier.first+")";
+    
+    return durability;
+}
+
+const set<TRAIT> miningSpeedIgnoredTraits = { TRAIT::AUTOSMELT,TRAIT::BACONLICIOUS,TRAIT::BEHEADING,TRAIT::BREAKABLE,TRAIT::CHEAP,TRAIT::CHEAPSKATE,TRAIT::COLDBLOODED,TRAIT::CRUDE,TRAIT::CRUDEII,TRAIT::DURITAE,TRAIT::ECOLOGICAL,TRAIT::ENDERFERENCE,TRAIT::ENDSPEED,TRAIT::EVILAURA,TRAIT::EXPERIENCEBOOST,TRAIT::FLAMMABLE,TRAIT::FRACTURED,TRAIT::FREEZING,TRAIT::HELLISH,TRAIT::HOVERING,TRAIT::INSATIABLE,TRAIT::JAGGED,TRAIT::MAGICALLYBRITTLE,TRAIT::MAGICALLYMODIFIABLE,TRAIT::MAGNETIC,TRAIT::MAGNETICII,TRAIT::PETRAMOR,TRAIT::PRICKLY,TRAIT::SHARP,TRAIT::SLIMEY,TRAIT::SPIKY,TRAIT::SPLINTERING,TRAIT::SPLITTING,TRAIT::SQUEAKY,TRAIT::STALWART,TRAIT::SUPERHEAT,TRAIT::SYNERGY,TRAIT::TASTY,TRAIT::WHISPERING,TRAIT::WRITABLE,TRAIT::WRITABLEII,TRAIT::VEILED};
+pair<double,double> getMiningSpeed()
+{
+    double miningSpeedSum = 0, miningSpeedCount = 0;
+    int miningLevelMax = 0;
+    vector<int> miningLevels;
+    vector<TRAIT> traits;
+    
+    //base mining speed
+    for(int i = 0; i < toolParts->size(); i++)
+        for(TOOLPART part : (*toolParts)[i]->parts)
+        {
+            if(part == TOOLPART::HEAD)
+            {
+                miningSpeedSum += materialToolParts[curTool.materials[i]][TOOLPART::HEAD].first[TOOLPROPERTIES::MININGSPEED];
+                miningSpeedCount++;
+                int t = materialToolParts[curTool.materials[i]][TOOLPART::HEAD].first[TOOLPROPERTIES::MININGLEVEL];
+                miningLevels.push_back(t);
+                miningLevelMax = max(miningLevelMax, t);
+            }
+            else if(part==TOOLPART::EXTRA || part==TOOLPART::HANDLE || part==TOOLPART::SHAFT || part==TOOLPART::FLETCHLING || part==TOOLPART::BOW || part==TOOLPART::BOWSTRING) {}
+            else
+                throw "Not Implemented Exception (part "+toolPartToString[part]+")";
+            
+            //traits
+            for(TRAIT trait : materialToolParts[curTool.materials[i]][part].second)
+                traits.push_back(trait);
+        }
+    
+    double miningSpeedAvg = miningSpeedSum / miningSpeedCount;
+    
+    double toolSpeed = miningSpeedAvg;
+    
+    //tool modifiers
+    auto it = toolToToolModifiers[tool].find(TOOLPROPERTIES::MININGSPEED);
+    if(it != toolToToolModifiers[tool].end())
+        for(pair<char,int> modifier : it->second)
+            if(modifier.first == '+')
+                toolSpeed += modifier.second;
+            else if(modifier.first == '*')
+                toolSpeed *= modifier.second;
+            else
+                throw string("Not Implemented Exception (")+modifier.first+")";
+    it = toolToToolModifiers[tool].find(TOOLPROPERTIES::MININGLEVEL);
+    if(it != toolToToolModifiers[tool].end())
+        for(pair<char,int> modifier : it->second)
+            if(modifier.first == '=')
+                miningLevelMax = materialToolParts[curTool.materials[modifier.second]][TOOLPART::HEAD].first[TOOLPROPERTIES::MININGLEVEL];
+            else
+                throw string("Not Implemented Exception (")+modifier.first+")";
+
+    double finalSpeed = toolSpeed;
+    
+    //traits
+    if(useEmbossment)
+        for(TOOLPART partTypes : curTool.embossment.part.parts)
+            for(TRAIT trait : materialToolParts[curTool.embossment.material][partTypes].second)
+                traits.push_back(trait);
+    for(TRAIT trait : traits)
+    {
+        if(trait == TRAIT::ALIEN)
+        {
+            finalSpeed += 1.862;
+        }
+        else if(trait == TRAIT::ARIDICULOUS)
+        {
+            finalSpeed += toolSpeed * ((pow(1.25, 3 * (0.5 + temperature - rainfall)) - 1.25) - rainfall/2) / 10;
+        }
+        else if(trait == TRAIT::AQUADYNAMIC)
+        {
+            finalSpeed += toolSpeed * rainfall/1.6;
+        }
+        else if(trait == TRAIT::CRUMBLING)
+        {
+            if(handBreakable)
+                finalSpeed *= toolSpeed * 0.5;
+        }
+        else if(trait == TRAIT::LIGHTWEIGHT)
+        {
+            finalSpeed *= 1.1;
+        }
+        else if(trait == TRAIT::MOMENTUM)
+        {
+            finalSpeed += toolSpeed * 0.4;
+        }
+        else if(trait == TRAIT::PRECIPITATE)
+        {
+            finalSpeed += toolSpeed * (1-playerHealth);
+        }
+        else if(trait == TRAIT::STONEBOUND)
+        {
+            finalSpeed += log((getDurability()-1) / 72 + 1) * 2;
+        }
+        else if(trait == TRAIT::TWILIT)
+        {
+            if(inTwilight)
+                finalSpeed += 2;
+        }
+        else if(trait == TRAIT::UNNATURAL)
+        {
+            if(blockLevel != -1 && miningLevelMax > blockLevel)
+                finalSpeed += miningLevelMax - blockLevel;
+        }
+        else if(miningSpeedIgnoredTraits.count(trait))
+        { }  //trait has no effect on mining speed
+        else
+            throw "Not Implemented Exception (trait "+traitToString[trait]+")";
+    }
+    
+    return { toolSpeed, finalSpeed-toolSpeed };
+}
+
+pair<double,double> getAttackSpeed()
+{
+    
+    return {-1,-1};
+}
+
+pair<double,double> getAttackDamage()
+{
+    
+    return {-1,-1};
+}
 
 void selectToolPart(int index)
 {
-    if(index == toolParts.size() + (useEmbossment?1:0))
+    if(index == toolParts->size() + (useEmbossment?1:0))
     {
         //evaluate tool
-        cout << materialToString[curTool.materials.front()] << endl;
+        if(target == OPTIMIZATIONTARGET::DURABILITY)
+        {
+            double curStat = getDurability();
+            if(curStat > bestStat.first+bestStat.second)
+            {
+                bestStat.first = curStat;
+                bestTool = curTool;
+            }
+        }
+        else if(target == OPTIMIZATIONTARGET::MININGSPEED)
+        {
+            pair<double,double> curStat = getMiningSpeed();
+            if(curStat.first+curStat.second > bestStat.first+bestStat.second)
+            {
+                bestStat = curStat;
+                bestTool = curTool;
+            }
+        }
+        else if(target == OPTIMIZATIONTARGET::ATTACKSPEED)
+        {
+            pair<double,double> curStat = getAttackSpeed();
+            if(curStat.first+curStat.second > bestStat.first+bestStat.second)
+            {
+                bestStat = curStat;
+                bestTool = curTool;
+            }
+        }
+        else if(target == OPTIMIZATIONTARGET::ATTACKDAMAGE)
+        {
+            pair<double,double> curStat = getAttackDamage();
+            if(curStat.first+curStat.second > bestStat.first+bestStat.second)
+            {
+                bestStat = curStat;
+                bestTool = curTool;
+            }
+        }
+        else if(target == OPTIMIZATIONTARGET::DPS)
+        {
+            pair<double, double> dmg = getAttackDamage();
+            pair<double, double> spd = getAttackSpeed();
+            double curStat = (dmg.first+dmg.second)*(spd.first+spd.second);
+            if(curStat > bestStat.first)
+            {
+                bestStat.first = curStat;
+                bestTool = curTool;
+            }
+        }
+                
         return;
     }
-    else if(index == toolParts.size() && useEmbossment)
+    else if(index == toolParts->size() && useEmbossment)
     {
         //select embossment
         for(MATERIAL material : materials)
-            for(namedToolPart part : toolParts)
+            for(namedToolPart* part : *toolParts)
             {
                 bool valid = true;
-                for(TOOLPART partType : part.parts)
+                for(TOOLPART partType : part->parts)
                 {
                     auto it = materialToolParts[material].find(partType);
                     if(it == materialToolParts[material].end())
@@ -44,17 +305,21 @@ void selectToolPart(int index)
                 }
                 if(valid)
                 {
-                    curTool.embossment = { part, material };
+                    curTool.embossment = { *part, material };
                     selectToolPart(index + 1);
                 }
             }
         return;
     }
     //select material
+    int i = 0;
     for(MATERIAL material : materials)
     {
+        if(index == 0)
+            printf("%i/%lu\n", i++, materials.size());
+        
         bool valid = true;
-        for(TOOLPART partType : toolParts[index].parts)
+        for(TOOLPART partType : (*toolParts)[index]->parts)
         {
             auto it = materialToolParts[material].find(partType);
             if(it == materialToolParts[material].end())
@@ -71,8 +336,14 @@ void selectToolPart(int index)
 
 void optimize()
 {
+    if(materials.size() == 0)
+    {
+        cout << "no materials selected" << endl;
+        return;
+    }
+    
     toolParts = toolToToolparts.find(tool)->second;
-    curTool.materials.resize(toolParts.size());
+    curTool.materials.resize(toolParts->size());
     
     if(verbose)
     {
@@ -80,8 +351,8 @@ void optimize()
         cout << toolToString[tool] << endl;
         //toolparts
         
-        for(auto toolpart : toolParts)
-            cout << toolpart.name << ", ";
+        for(auto toolpart : (*toolParts))
+            cout << toolpart->name << ", ";
         cout << endl;
         //optimization target
         cout << optimTargetToString[target] << endl;
@@ -92,9 +363,22 @@ void optimize()
         //embossment
         if(useEmbossment)
             cout << "embossment" << endl;
+        cout << endl;
     }
     
     selectToolPart(0);
+    
+    //display results
+    for(int i = 0; i < bestTool.materials.size(); i++)
+                printf("%s %s\n", materialToString[bestTool.materials[i]].c_str(), (*toolParts)[i]->name.c_str());
+            if(useEmbossment)
+            {
+                printf("%s %s Embossment\n", materialToString[bestTool.embossment.material].c_str(), bestTool.embossment.part.name.c_str());
+            }
+            if(bestStat.second == -1)
+                printf("%f\n", bestStat.first);
+            else
+                printf("%f + %f\n", bestStat.first, bestStat.second);
 }
 
 void showHelp()
@@ -103,6 +387,7 @@ void showHelp()
     cout << endl;
     cout << "options:" << endl;
     printf("%-20s%s\n", "-e", "Enables embossment");
+    printf("%-20s%s\n", "-h", "Shows this help");
     printf("%-20s%s\n", "-m <material>", "Add a material to the material list");
     printf("%-20s%s\n", "-n <material>", "Remove a material to the material list");
     printf("%-20s%s\n", "-v, --verbose", "Additional program output");
@@ -132,7 +417,12 @@ int main(int argc, char *argv[])
         }
         else if(args[i].rfind("-", 0) == 0)  //starts with "-"
         {
-            if(args[i].rfind("-m", 0) == 0)
+            if(args[i].rfind("-h", 0) == 0)
+            {
+                showHelp();
+                return 0;
+            }
+            else if(args[i].rfind("-m", 0) == 0)
             {
                 //-m MATERIAL
                 //-m all
@@ -143,12 +433,12 @@ int main(int argc, char *argv[])
                     return 1;
                 }
                 else if(args[i] == "all")
-                    materials.insert(allMaterials.begin(), allMaterials.end());
+                    materials = allMaterials;
                 else
                 {
                     auto it = stringToMaterial.find(args[i]);
                     if(it != stringToMaterial.end())
-                        materials.insert(it->second);
+                        materials.push_back(it->second);
                     else
                         printf("unrecognized tool \"%s\"\n", args[i].c_str());
                 }
@@ -169,7 +459,7 @@ int main(int argc, char *argv[])
                 {
                     auto it = stringToMaterial.find(args[i]);
                     if(it != stringToMaterial.end())
-                        materials.erase(it->second);
+                        materials.erase(find(materials.begin(), materials.end(), it->second));
                     else
                         printf("unrecognized tool \"%s\"\n", args[i].c_str());
                 }

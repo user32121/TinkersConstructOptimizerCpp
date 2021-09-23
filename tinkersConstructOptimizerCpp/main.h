@@ -171,7 +171,7 @@ enum class TOOLPROPERTIES {
     BONUSAMMO,
 };
 
-set<MATERIAL> allMaterials = {
+const vector<MATERIAL> allMaterials = {
     MATERIAL::NAGASCALE,
     MATERIAL::STEELEAF,
     MATERIAL::FIERYINGOT,
@@ -223,7 +223,7 @@ struct toolResult {
 };
 
 //parsing enums
-map<string, TOOL> stringToTool = {
+const map<string, TOOL> stringToTool = {
     { "pickaxe",TOOL::PICKAXE},
     { "shovel",TOOL::SHOVEL },
     { "hatchet",TOOL::HATCHET },
@@ -248,7 +248,7 @@ map<string, TOOL> stringToTool = {
 };
 map<TOOL, string> toolToString;
 
-map<string, TOOLPART> stringToToolPart = {
+const map<string, TOOLPART> stringToToolPart = {
     {"head",TOOLPART::HEAD},
     {"handle",TOOLPART::HANDLE,},
     {"extra",TOOLPART::EXTRA},
@@ -259,7 +259,7 @@ map<string, TOOLPART> stringToToolPart = {
 };
 map<TOOLPART, string> toolPartToString;
 
-map<string, MATERIAL> stringToMaterial = {
+const map<string, MATERIAL> stringToMaterial = {
     {"nagascale",MATERIAL::NAGASCALE},
     {"steeleaf",MATERIAL::STEELEAF},
     {"fieryingot",MATERIAL::FIERYINGOT},
@@ -288,7 +288,7 @@ map<string, MATERIAL> stringToMaterial = {
     {"magicalwood",MATERIAL::MAGICALWOOD},
     {"evilinfusediron",MATERIAL::EVILINFUSEDIRON},
     {"enchantedmetal",MATERIAL::ENCHANTEDMETAL},
-    {"demonicalmetal",MATERIAL::DEMONICMETAL},
+    {"demonicmetal",MATERIAL::DEMONICMETAL},
     {"string",MATERIAL::STRING},
     {"slimevine",MATERIAL::SLIMEVINE},
     {"vines",MATERIAL::VINES},
@@ -303,7 +303,7 @@ map<string, MATERIAL> stringToMaterial = {
 };
 map<MATERIAL, string> materialToString;
 
-map<string, OPTIMIZATIONTARGET> stringToOptimTarget = {
+const map<string, OPTIMIZATIONTARGET> stringToOptimTarget = {
     {"durability",OPTIMIZATIONTARGET::DURABILITY},
     {"miningspeed",OPTIMIZATIONTARGET::MININGSPEED},
     {"attackspeed",OPTIMIZATIONTARGET::ATTACKSPEED},
@@ -312,118 +312,175 @@ map<string, OPTIMIZATIONTARGET> stringToOptimTarget = {
 };
 map<OPTIMIZATIONTARGET, string> optimTargetToString;
 
+map<string, TRAIT> stringToTrait = {
+    {"alien",TRAIT::ALIEN},
+    {"aquadynamic",TRAIT::AQUADYNAMIC},
+    {"aridiculous",TRAIT::ARIDICULOUS},
+    {"autosmelt",TRAIT::AUTOSMELT},
+    {"baconlicious",TRAIT::BACONLICIOUS},
+    {"beheading",TRAIT::BEHEADING},
+    {"breakable",TRAIT::BREAKABLE},
+    {"cheap",TRAIT::CHEAP},
+    {"cheapskate",TRAIT::CHEAPSKATE},
+    {"coldblooded",TRAIT::COLDBLOODED},
+    {"crude",TRAIT::CRUDE},
+    {"crudeii",TRAIT::CRUDEII},
+    {"crumbling",TRAIT::CRUMBLING},
+    {"duritae",TRAIT::DURITAE},
+    {"ecological",TRAIT::ECOLOGICAL},
+    {"enderference",TRAIT::ENDERFERENCE},
+    {"endspeed",TRAIT::ENDSPEED},
+    {"evilaura",TRAIT::EVILAURA},
+    {"experienceboost",TRAIT::EXPERIENCEBOOST},
+    {"flammable",TRAIT::FLAMMABLE},
+    {"fractured",TRAIT::FRACTURED},
+    {"freezing",TRAIT::FREEZING},
+    {"hellish",TRAIT::HELLISH},
+    {"hovering",TRAIT::HOVERING},
+    {"insatiable",TRAIT::INSATIABLE},
+    {"jagged",TRAIT::JAGGED},
+    {"lightweight",TRAIT::LIGHTWEIGHT},
+    {"magnetic",TRAIT::MAGNETIC},
+    {"magneticii",TRAIT::MAGNETICII},
+    {"magicallybrittle",TRAIT::MAGICALLYBRITTLE},
+    {"magicallymodifiable",TRAIT::MAGICALLYMODIFIABLE},
+    {"momentum",TRAIT::MOMENTUM},
+    {"petramor",TRAIT::PETRAMOR},
+    {"precipitate",TRAIT::PRECIPITATE},
+    {"prickly",TRAIT::PRICKLY},
+    {"sharp",TRAIT::SHARP},
+    {"slimey",TRAIT::SLIMEY},
+    {"spiky",TRAIT::SPIKY},
+    {"splintering",TRAIT::SPLINTERING},
+    {"splitting",TRAIT::SPLITTING},
+    {"squeaky",TRAIT::SQUEAKY},
+    {"stalwart",TRAIT::STALWART},
+    {"stonebound",TRAIT::STONEBOUND},
+    {"superheat",TRAIT::SUPERHEAT},
+    {"synergy",TRAIT::SYNERGY},
+    {"tasty",TRAIT::TASTY},
+    {"twilit",TRAIT::TWILIT},
+    {"unnatural",TRAIT::UNNATURAL},
+    {"whispering",TRAIT::WHISPERING},
+    {"writable",TRAIT::WRITABLE},
+    {"writableii",TRAIT::WRITABLEII},
+    {"veiled",TRAIT::VEILED},
+};
+map<TRAIT, string> traitToString;
+
 //tool properties
-map<TOOL, vector<namedToolPart>> toolToToolparts = {
-    { TOOL::PICKAXE, {
-        {"Tool Rod", {TOOLPART::HANDLE}},
-        {"Pickaxe Head", {TOOLPART::HEAD}},
-        {"Binding", {TOOLPART::EXTRA}},
+
+map<TOOL, vector<namedToolPart*>*> toolToToolparts = {
+    { TOOL::PICKAXE, new vector<namedToolPart*> {
+        new namedToolPart {"Tool Rod", {TOOLPART::HANDLE}},
+        new namedToolPart {"Pickaxe Head", {TOOLPART::HEAD}},
+        new namedToolPart {"Binding", {TOOLPART::EXTRA}},
     }},
-    { TOOL::SHOVEL, {
-        {"Tool Rod", {TOOLPART::HANDLE}},
-        {"Shovel Head", {TOOLPART::HEAD}},
-        {"Binding", {TOOLPART::EXTRA}},
+    { TOOL::SHOVEL, new vector<namedToolPart*> {
+        new namedToolPart {"Tool Rod", {TOOLPART::HANDLE}},
+        new namedToolPart {"Shovel Head", {TOOLPART::HEAD}},
+        new namedToolPart {"Binding", {TOOLPART::EXTRA}},
     }},
-    { TOOL::HATCHET, {
-        {"Tool Rod", {TOOLPART::HANDLE}},
-        {"Axe Head", {TOOLPART::HEAD}},
-        {"Binding", {TOOLPART::EXTRA}},
+    { TOOL::HATCHET, new vector<namedToolPart*> {
+        new namedToolPart {"Tool Rod", {TOOLPART::HANDLE}},
+        new namedToolPart {"Axe Head", {TOOLPART::HEAD}},
+        new namedToolPart {"Binding", {TOOLPART::EXTRA}},
     }},
-    { TOOL::MATTOCK, {
-        {"Tool Rod", {TOOLPART::HANDLE}},
-        {"Axe Head", {TOOLPART::HEAD}},
-        {"Shovel Head", {TOOLPART::HEAD}},
+    { TOOL::MATTOCK, new vector<namedToolPart*> {
+        new namedToolPart {"Tool Rod", {TOOLPART::HANDLE}},
+        new namedToolPart {"Axe Head", {TOOLPART::HEAD}},
+        new namedToolPart {"Shovel Head", {TOOLPART::HEAD}},
     }},
-    { TOOL::KAMA, {
-        {"Tool Rod", {TOOLPART::HANDLE}},
-        {"Kama Head", {TOOLPART::HEAD}},
-        {"Binding", {TOOLPART::EXTRA}},
+    { TOOL::KAMA, new vector<namedToolPart*> {
+        new namedToolPart {"Tool Rod", {TOOLPART::HANDLE}},
+        new namedToolPart {"Kama Head", {TOOLPART::HEAD}},
+        new namedToolPart {"Binding", {TOOLPART::EXTRA}},
     }},
-    { TOOL::SCYTHE, {
-        {"Tough Tool Rod", {TOOLPART::HANDLE}},
-        {"Scythe Head", {TOOLPART::HEAD}},
-        {"Tough Binding", {TOOLPART::EXTRA}},
-        {"Tough Tool Rod", {TOOLPART::HANDLE}},
+    { TOOL::SCYTHE, new vector<namedToolPart*> {
+        new namedToolPart {"Tough Tool Rod", {TOOLPART::HANDLE}},
+        new namedToolPart {"Scythe Head", {TOOLPART::HEAD}},
+        new namedToolPart {"Tough Binding", {TOOLPART::EXTRA}},
+        new namedToolPart {"Tough Tool Rod", {TOOLPART::HANDLE}},
     }},
-    { TOOL::HAMMER, {
-        {"Tough Tool Rod", {TOOLPART::HANDLE}},
-        {"Hammer Head", {TOOLPART::HEAD,TOOLPART::HEAD}},
-        {"Large Plate", {TOOLPART::HEAD}},
-        {"Large Plate", {TOOLPART::HEAD}},
+    { TOOL::HAMMER, new vector<namedToolPart*> {
+        new namedToolPart {"Tough Tool Rod", {TOOLPART::HANDLE}},
+        new namedToolPart {"Hammer Head", {TOOLPART::HEAD,TOOLPART::HEAD}},
+        new namedToolPart {"Large Plate", {TOOLPART::HEAD}},
+        new namedToolPart {"Large Plate", {TOOLPART::HEAD}},
     }},
-    { TOOL::EXCAVATOR, {
-        {"Tough Tool Rod", {TOOLPART::HANDLE}},
-        {"Excavator Head", {TOOLPART::HEAD}},
-        {"Large Plate", {TOOLPART::HEAD}},
-        {"Tough Binding", {TOOLPART::EXTRA}},
+    { TOOL::EXCAVATOR, new vector<namedToolPart*> {
+        new namedToolPart {"Tough Tool Rod", {TOOLPART::HANDLE}},
+        new namedToolPart {"Excavator Head", {TOOLPART::HEAD}},
+        new namedToolPart {"Large Plate", {TOOLPART::HEAD}},
+        new namedToolPart {"Tough Binding", {TOOLPART::EXTRA}},
     }},
-    { TOOL::LUMBERAXE, {
-        {"Tough Tool Rod", {TOOLPART::HANDLE}},
-        {"Broad Axe Head", {TOOLPART::HEAD}},
-        {"Large Plate", {TOOLPART::HEAD}},
-        {"Tough Binding", {TOOLPART::EXTRA}},
+    { TOOL::LUMBERAXE, new vector<namedToolPart*> {
+        new namedToolPart {"Tough Tool Rod", {TOOLPART::HANDLE}},
+        new namedToolPart {"Broad Axe Head", {TOOLPART::HEAD}},
+        new namedToolPart {"Large Plate", {TOOLPART::HEAD}},
+        new namedToolPart {"Tough Binding", {TOOLPART::EXTRA}},
     }},
-    { TOOL::BROADSWORD, {
-        {"Tool Rod", {TOOLPART::HANDLE}},
-        {"Sword Blade", {TOOLPART::HEAD}},
-        {"Wide Guard", {TOOLPART::EXTRA}},
+    { TOOL::BROADSWORD, new vector<namedToolPart*> {
+        new namedToolPart {"Tool Rod", {TOOLPART::HANDLE}},
+        new namedToolPart {"Sword Blade", {TOOLPART::HEAD}},
+        new namedToolPart {"Wide Guard", {TOOLPART::EXTRA}},
     }},
-    { TOOL::LONGSWORD, {
-        {"Tool Rod", {TOOLPART::HANDLE}},
-        {"Sword Blade", {TOOLPART::HEAD}},
-        {"Hand Guard", {TOOLPART::EXTRA}},
+    { TOOL::LONGSWORD, new vector<namedToolPart*> {
+        new namedToolPart {"Tool Rod", {TOOLPART::HANDLE}},
+        new namedToolPart {"Sword Blade", {TOOLPART::HEAD}},
+        new namedToolPart {"Hand Guard", {TOOLPART::EXTRA}},
     }},
-    { TOOL::RAPIER, {
-        {"Tool Rod", {TOOLPART::HANDLE}},
-        {"Sword Blade", {TOOLPART::HEAD}},
-        {"Cross Guard", {TOOLPART::EXTRA}},
+    { TOOL::RAPIER, new vector<namedToolPart*> {
+        new namedToolPart {"Tool Rod", {TOOLPART::HANDLE}},
+        new namedToolPart {"Sword Blade", {TOOLPART::HEAD}},
+        new namedToolPart {"Cross Guard", {TOOLPART::EXTRA}},
     }},
-    { TOOL::BATTLESIGN, {
-        {"Tool Rod", {TOOLPART::HANDLE}},
-        {"Sign Plate", {TOOLPART::HEAD}},
+    { TOOL::BATTLESIGN, new vector<namedToolPart*> {
+        new namedToolPart {"Tool Rod", {TOOLPART::HANDLE}},
+        new namedToolPart {"Sign Plate", {TOOLPART::HEAD}},
     }},
-    { TOOL::FRYPAN, {
-        {"Tool Rod", {TOOLPART::HANDLE}},
-        {"Pan", {TOOLPART::HEAD}},
+    { TOOL::FRYPAN, new vector<namedToolPart*> {
+        new namedToolPart {"Tool Rod", {TOOLPART::HANDLE}},
+        new namedToolPart {"Pan", {TOOLPART::HEAD}},
     }},
-    { TOOL::CLEAVER, {
-        {"Tough Tool Rod", {TOOLPART::HANDLE}},
-        {"Large Sword Blade", {TOOLPART::HEAD}},
-        {"Large Plate", {TOOLPART::HEAD}},
-        {"Tough Tool Rod", {TOOLPART::EXTRA}},
+    { TOOL::CLEAVER, new vector<namedToolPart*> {
+        new namedToolPart {"Tough Tool Rod", {TOOLPART::HANDLE}},
+        new namedToolPart {"Large Sword Blade", {TOOLPART::HEAD}},
+        new namedToolPart {"Large Plate", {TOOLPART::HEAD}},
+        new namedToolPart {"Tough Tool Rod", {TOOLPART::EXTRA}},
     }},
-    { TOOL::ARROW, {
-        {"Arrow Shaft", {TOOLPART::SHAFT}},
-        {"Arrow Head", {TOOLPART::HEAD}},
-        {"Fletchling", {TOOLPART::FLETCHLING}},
+    { TOOL::ARROW, new vector<namedToolPart*> {
+        new namedToolPart {"Arrow Shaft", {TOOLPART::SHAFT}},
+        new namedToolPart {"Arrow Head", {TOOLPART::HEAD}},
+        new namedToolPart {"Fletchling", {TOOLPART::FLETCHLING}},
     }},
-    { TOOL::SHORTBOW, {
-        {"Bowlimb", {TOOLPART::HEAD,TOOLPART::BOW}},
-        {"Bowlimb", {TOOLPART::HEAD,TOOLPART::BOW}},
-        {"Bowstring", {TOOLPART::BOWSTRING}},
+    { TOOL::SHORTBOW, new vector<namedToolPart*> {
+        new namedToolPart {"Bowlimb", {TOOLPART::HEAD,TOOLPART::BOW}},
+        new namedToolPart {"Bowlimb", {TOOLPART::HEAD,TOOLPART::BOW}},
+        new namedToolPart {"Bowstring", {TOOLPART::BOWSTRING}},
     }},
-    { TOOL::LONGBOW, {
-        {"Bowlimb", {TOOLPART::HEAD,TOOLPART::BOW}},
-        {"Bowlimb", {TOOLPART::HEAD,TOOLPART::BOW}},
-        {"Large Plate", {TOOLPART::EXTRA}},
-        {"Bowstring", {TOOLPART::BOWSTRING}},
+    { TOOL::LONGBOW, new vector<namedToolPart*> {
+        new namedToolPart {"Bowlimb", {TOOLPART::HEAD,TOOLPART::BOW}},
+        new namedToolPart {"Bowlimb", {TOOLPART::HEAD,TOOLPART::BOW}},
+        new namedToolPart {"Large Plate", {TOOLPART::EXTRA}},
+        new namedToolPart {"Bowstring", {TOOLPART::BOWSTRING}},
     }},
-    { TOOL::BOLT, {
-        {"Bolt Core (Shaft)", {TOOLPART::SHAFT}},
-        {"Bolt Core (Head)", {TOOLPART::HEAD}},
-        {"Fletchling", {TOOLPART::FLETCHLING}},
+    { TOOL::BOLT, new vector<namedToolPart*> {
+        new namedToolPart {"Bolt Core (Shaft)", {TOOLPART::SHAFT}},
+        new namedToolPart {"Bolt Core (Head)", {TOOLPART::HEAD}},
+        new namedToolPart {"Fletchling", {TOOLPART::FLETCHLING}},
     }},
-    { TOOL::CROSSBOW, {
-        {"Tough Tool Rod", {TOOLPART::HANDLE,TOOLPART::EXTRA}},
-        {"Bowlimb", {TOOLPART::HEAD,TOOLPART::BOW}},
-        {"Tough Binding", {TOOLPART::EXTRA}},
-        {"Bowstring", {TOOLPART::BOWSTRING}},
+    { TOOL::CROSSBOW, new vector<namedToolPart*> {
+        new namedToolPart {"Tough Tool Rod", {TOOLPART::HANDLE,TOOLPART::EXTRA}},
+        new namedToolPart {"Bowlimb", {TOOLPART::HEAD,TOOLPART::BOW}},
+        new namedToolPart {"Tough Binding", {TOOLPART::EXTRA}},
+        new namedToolPart {"Bowstring", {TOOLPART::BOWSTRING}},
     }},
-    { TOOL::SHURIKEN, {
-        {"Knife Blade", {TOOLPART::HEAD,TOOLPART::EXTRA}},
-        {"Knife Blade", {TOOLPART::HEAD,TOOLPART::EXTRA}},
-        {"Knife Blade", {TOOLPART::HEAD,TOOLPART::EXTRA}},
-        {"Knife Blade", {TOOLPART::HEAD,TOOLPART::EXTRA}},
+    { TOOL::SHURIKEN, new vector<namedToolPart*> {
+        new namedToolPart {"Knife Blade", {TOOLPART::HEAD,TOOLPART::EXTRA}},
+        new namedToolPart {"Knife Blade", {TOOLPART::HEAD,TOOLPART::EXTRA}},
+        new namedToolPart {"Knife Blade", {TOOLPART::HEAD,TOOLPART::EXTRA}},
+        new namedToolPart {"Knife Blade", {TOOLPART::HEAD,TOOLPART::EXTRA}},
     }},
 };
 map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> materialToolParts = {
@@ -512,7 +569,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 400},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.7},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.7},
             },
             {TRAIT::TWILIT, TRAIT::FLAMMABLE}
         }},
@@ -524,16 +581,16 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 1},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 0.9},
-            {TOOLPROPERTIES::BONUSDAMAGE, 4},
+                {TOOLPROPERTIES::DRAWSPEED, 1},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 0.9},
+                {TOOLPROPERTIES::BONUSDAMAGE, 4},
             },
             {TRAIT::TWILIT, TRAIT::FLAMMABLE}
         }},
         { TOOLPART::SHAFT, {
             {
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.8},
-            {TOOLPROPERTIES::BONUSAMMO, 0},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.8},
+                {TOOLPROPERTIES::BONUSAMMO, 0},
             },
             {TRAIT::TWILIT, TRAIT::FLAMMABLE}
         }},
@@ -551,7 +608,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 100},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1.25},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1.25},
             },
             {TRAIT::TWILIT, TRAIT::STALWART}
         }},
@@ -575,7 +632,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 25},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
             },
             {TRAIT::ECOLOGICAL}
         }},
@@ -587,16 +644,16 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 1},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 1},
-            {TOOLPROPERTIES::BONUSDAMAGE, 0},
+                {TOOLPROPERTIES::DRAWSPEED, 1},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 1},
+                {TOOLPROPERTIES::BONUSDAMAGE, 0},
             },
             {TRAIT::ECOLOGICAL}
         }},
         { TOOLPART::SHAFT, {
             {
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
-            {TOOLPROPERTIES::BONUSAMMO, 0},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
+                {TOOLPROPERTIES::BONUSAMMO, 0},
             },
             {TRAIT::ECOLOGICAL}
         }},
@@ -614,7 +671,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, -50},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.5},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.5},
             },
             {TRAIT::CHEAP}
         }},
@@ -626,9 +683,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 5},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 0.4},
-            {TOOLPROPERTIES::BONUSDAMAGE, -1},
+                {TOOLPROPERTIES::DRAWSPEED, 5},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 0.4},
+                {TOOLPROPERTIES::BONUSDAMAGE, -1},
             },
             {TRAIT::CHEAP}
         }},
@@ -646,7 +703,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, -60},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.6},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.6},
             },
             {TRAIT::CRUDE}
         }},
@@ -658,9 +715,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 5},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 0.4},
-            {TOOLPROPERTIES::BONUSDAMAGE, -1},
+                {TOOLPROPERTIES::DRAWSPEED, 5},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 0.4},
+                {TOOLPROPERTIES::BONUSDAMAGE, -1},
             },
             {TRAIT::CRUDE, TRAIT::CRUDEII}
         }},
@@ -678,7 +735,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 20},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.85},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.85},
             },
             {TRAIT::SPIKY}
         }},
@@ -690,9 +747,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 0.95},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 0.9},
-            {TOOLPROPERTIES::BONUSDAMAGE, 0},
+                {TOOLPROPERTIES::DRAWSPEED, 0.95},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 0.9},
+                {TOOLPROPERTIES::BONUSDAMAGE, 0},
             },
             {TRAIT::SPIKY}
         }},
@@ -710,7 +767,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 50},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1.1},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1.1},
             },
             {TRAIT::FRACTURED}
         }},
@@ -722,16 +779,16 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 1.05},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 1.15},
-            {TOOLPROPERTIES::BONUSDAMAGE, 0},
+                {TOOLPROPERTIES::DRAWSPEED, 1.05},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 1.15},
+                {TOOLPROPERTIES::BONUSDAMAGE, 0},
             },
             {TRAIT::FRACTURED}
         }},
         { TOOLPART::SHAFT, {
             {
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.9},
-            {TOOLPROPERTIES::BONUSAMMO, 5},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.9},
+                {TOOLPROPERTIES::BONUSAMMO, 5},
             },
             {TRAIT::SPLITTING}
         }},
@@ -749,7 +806,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, -100},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.9},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.9},
             },
             {TRAIT::DURITAE}
         }},
@@ -761,9 +818,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 5},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 0.4},
-            {TOOLPROPERTIES::BONUSDAMAGE, -1},
+                {TOOLPROPERTIES::DRAWSPEED, 5},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 0.4},
+                {TOOLPROPERTIES::BONUSDAMAGE, -1},
             },
             {TRAIT::DURITAE}
         }},
@@ -781,7 +838,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, -150},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.6},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.6},
             },
             {TRAIT::AQUADYNAMIC}
         }},
@@ -793,9 +850,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 5},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 0.4},
-            {TOOLPROPERTIES::BONUSDAMAGE, -1},
+                {TOOLPROPERTIES::DRAWSPEED, 5},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 0.4},
+                {TOOLPROPERTIES::BONUSDAMAGE, -1},
             },
             {TRAIT::AQUADYNAMIC}
         }},
@@ -813,7 +870,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 0},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.85},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.85},
             },
             {TRAIT::ENDERFERENCE}
         }},
@@ -825,9 +882,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 5},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 0.4},
-            {TOOLPROPERTIES::BONUSDAMAGE, -1},
+                {TOOLPROPERTIES::DRAWSPEED, 5},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 0.4},
+                {TOOLPROPERTIES::BONUSDAMAGE, -1},
             },
             {TRAIT::ENDERFERENCE}
         }},
@@ -845,7 +902,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 5},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.1},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.1},
             },
             {TRAIT::WRITABLE}
         }},
@@ -857,9 +914,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 0.67},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 0.4},
-            {TOOLPROPERTIES::BONUSDAMAGE, -2},
+                {TOOLPROPERTIES::DRAWSPEED, 0.67},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 0.4},
+                {TOOLPROPERTIES::BONUSDAMAGE, -2},
             },
             {TRAIT::WRITABLEII}
         }},
@@ -877,7 +934,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 250},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1.2},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1.2},
             },
             {TRAIT::SQUEAKY}
         }},
@@ -889,9 +946,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 0.87},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 0.75},
-            {TOOLPROPERTIES::BONUSDAMAGE, 0},
+                {TOOLPROPERTIES::DRAWSPEED, 0.87},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 0.75},
+                {TOOLPROPERTIES::BONUSDAMAGE, 0},
             },
             {TRAIT::SQUEAKY}
         }},
@@ -909,7 +966,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, -200},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
             },
             {TRAIT::AUTOSMELT}
         }},
@@ -921,9 +978,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 1},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 1},
-            {TOOLPROPERTIES::BONUSDAMAGE, 0},
+                {TOOLPROPERTIES::DRAWSPEED, 1},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 1},
+                {TOOLPROPERTIES::BONUSDAMAGE, 0},
             },
             {TRAIT::AUTOSMELT}
         }},
@@ -941,7 +998,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 60},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.85},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.85},
             },
             {TRAIT::MAGNETIC}
         }},
@@ -953,9 +1010,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 2},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 1.5},
-            {TOOLPROPERTIES::BONUSDAMAGE, 7},
+                {TOOLPROPERTIES::DRAWSPEED, 2},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 1.5},
+                {TOOLPROPERTIES::BONUSDAMAGE, 7},
             },
             {TRAIT::MAGNETIC, TRAIT::MAGNETICII}
         }},
@@ -973,7 +1030,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 0},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1.2},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1.2},
             },
             {TRAIT::TASTY}
         }},
@@ -985,9 +1042,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 1.67},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 1.4},
-            {TOOLPROPERTIES::BONUSDAMAGE, 7},
+                {TOOLPROPERTIES::DRAWSPEED, 1.67},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 1.4},
+                {TOOLPROPERTIES::BONUSDAMAGE, 7},
             },
             {TRAIT::TASTY}
         }},
@@ -1005,7 +1062,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 500},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.5},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.5},
             },
             {TRAIT::UNNATURAL}
         }},
@@ -1017,9 +1074,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 2.5},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 2},
-            {TOOLPROPERTIES::BONUSDAMAGE, 2},
+                {TOOLPROPERTIES::DRAWSPEED, 2.5},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 2},
+                {TOOLPROPERTIES::BONUSDAMAGE, 2},
             },
             {TRAIT::UNNATURAL}
         }},
@@ -1037,7 +1094,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 0},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.7},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.7},
             },
             {TRAIT::SLIMEY}
         }},
@@ -1049,9 +1106,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 1.18},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 1.3},
-            {TOOLPROPERTIES::BONUSDAMAGE, 0},
+                {TOOLPROPERTIES::DRAWSPEED, 1.18},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 1.3},
+                {TOOLPROPERTIES::BONUSDAMAGE, 0},
             },
             {TRAIT::SLIMEY}
         }},
@@ -1069,7 +1126,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, -50},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1.3},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1.3},
             },
             {TRAIT::SLIMEY}
         }},
@@ -1081,9 +1138,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 0.95},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 1},
-            {TOOLPROPERTIES::BONUSDAMAGE, 0},
+                {TOOLPROPERTIES::DRAWSPEED, 0.95},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 1},
+                {TOOLPROPERTIES::BONUSDAMAGE, 0},
             },
             {TRAIT::SLIMEY}
         }},
@@ -1101,7 +1158,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, -200},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.85},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.85},
             },
             {TRAIT::FLAMMABLE}
         }},
@@ -1113,9 +1170,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 0.91},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 1.05},
-            {TOOLPROPERTIES::BONUSDAMAGE, 1},
+                {TOOLPROPERTIES::DRAWSPEED, 0.91},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 1.05},
+                {TOOLPROPERTIES::BONUSDAMAGE, 1},
             },
             {TRAIT::FLAMMABLE}
         }},
@@ -1133,7 +1190,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, -150},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.85},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.85},
             },
             {TRAIT::HELLISH}
         }},
@@ -1145,9 +1202,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 5},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 0.4},
-            {TOOLPROPERTIES::BONUSDAMAGE, -1},
+                {TOOLPROPERTIES::DRAWSPEED, 5},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 0.4},
+                {TOOLPROPERTIES::BONUSDAMAGE, -1},
             },
             {TRAIT::HELLISH}
         }},
@@ -1165,7 +1222,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 100},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.9},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.9},
             },
             {TRAIT::LIGHTWEIGHT}
         }},
@@ -1177,9 +1234,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 1.33},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 1.3},
-            {TOOLPROPERTIES::BONUSDAMAGE, 3},
+                {TOOLPROPERTIES::DRAWSPEED, 1.33},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 1.3},
+                {TOOLPROPERTIES::BONUSDAMAGE, 3},
             },
             {TRAIT::LIGHTWEIGHT}
         }},
@@ -1197,7 +1254,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, -200},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1.4},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1.4},
             },
             {TRAIT::PETRAMOR}
         }},
@@ -1209,9 +1266,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 2.22},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 0.8},
-            {TOOLPROPERTIES::BONUSDAMAGE, 1},
+                {TOOLPROPERTIES::DRAWSPEED, 2.22},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 0.8},
+                {TOOLPROPERTIES::BONUSDAMAGE, 1},
             },
             {TRAIT::PETRAMOR}
         }},
@@ -1229,7 +1286,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 250},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.5},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.5},
             },
             {TRAIT::COLDBLOODED}
         }},
@@ -1241,9 +1298,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 1.54},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 1.2},
-            {TOOLPROPERTIES::BONUSDAMAGE, 4},
+                {TOOLPROPERTIES::DRAWSPEED, 1.54},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 1.2},
+                {TOOLPROPERTIES::BONUSDAMAGE, 4},
             },
             {TRAIT::COLDBLOODED}
         }},
@@ -1261,7 +1318,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 25},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
             },
             {TRAIT::MAGICALLYMODIFIABLE, TRAIT::MAGICALLYBRITTLE}
         }},
@@ -1273,9 +1330,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 1},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 1},
-            {TOOLPROPERTIES::BONUSDAMAGE, 0},
+                {TOOLPROPERTIES::DRAWSPEED, 1},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 1},
+                {TOOLPROPERTIES::BONUSDAMAGE, 0},
             },
             {TRAIT::MAGICALLYMODIFIABLE, TRAIT::MAGICALLYBRITTLE}
         }},
@@ -1293,7 +1350,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 0},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
             },
             {}
         }},
@@ -1317,7 +1374,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 20},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1.1},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1.1},
             },
             {TRAIT::EXPERIENCEBOOST}
         }},
@@ -1341,7 +1398,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         { TOOLPART::HANDLE, {
             {
                 {TOOLPROPERTIES::DURABILITY, 100},
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.25},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.25},
             },
             {}
         }},
@@ -1353,9 +1410,9 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
         }},
         { TOOLPART::EXTRA, {
             {
-            {TOOLPROPERTIES::DRAWSPEED, 1.43},
-            {TOOLPROPERTIES::RANGEMULTIPLIER, 1.1},
-            {TOOLPROPERTIES::BONUSDAMAGE, 4},
+                {TOOLPROPERTIES::DRAWSPEED, 1.43},
+                {TOOLPROPERTIES::RANGEMULTIPLIER, 1.1},
+                {TOOLPROPERTIES::BONUSDAMAGE, 4},
             },
             {}
         }},
@@ -1363,7 +1420,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
     { MATERIAL::STRING, {
         { TOOLPART::BOWSTRING, {
             {
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
             },
             {}
         }},
@@ -1371,7 +1428,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
     { MATERIAL::SLIMEVINE, {
         { TOOLPART::BOWSTRING, {
             {
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
             },
             {}
         }},
@@ -1379,7 +1436,7 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
     { MATERIAL::VINES, {
         { TOOLPART::BOWSTRING, {
             {
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
             },
             {}
         }},
@@ -1387,8 +1444,8 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
     { MATERIAL::BLAZEROD, {
         { TOOLPART::SHAFT, {
             {
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.8},
-            {TOOLPROPERTIES::BONUSAMMO, 3},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.8},
+                {TOOLPROPERTIES::BONUSAMMO, 3},
             },
             {TRAIT::HOVERING}
         }},
@@ -1396,8 +1453,8 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
     { MATERIAL::REEDS, {
         { TOOLPART::SHAFT, {
             {
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1.5},
-            {TOOLPROPERTIES::BONUSAMMO, 20},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1.5},
+                {TOOLPROPERTIES::BONUSAMMO, 20},
             },
             {TRAIT::BREAKABLE}
         }},
@@ -1405,8 +1462,8 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
     { MATERIAL::ICE, {
         { TOOLPART::SHAFT, {
             {
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.95},
-            {TOOLPROPERTIES::BONUSAMMO, 0},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.95},
+                {TOOLPROPERTIES::BONUSAMMO, 0},
             },
             {TRAIT::FREEZING}
         }},
@@ -1414,8 +1471,8 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
     { MATERIAL::ENDROD, {
         { TOOLPART::SHAFT, {
             {
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 0.7},
-            {TOOLPROPERTIES::BONUSAMMO, 1},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 0.7},
+                {TOOLPROPERTIES::BONUSAMMO, 1},
             },
             {TRAIT::ENDSPEED}
         }},
@@ -1423,8 +1480,8 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
     { MATERIAL::RAVENFEATHER, {
         { TOOLPART::FLETCHLING, {
             {
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1.15},
-            {TOOLPROPERTIES::ACCURACY, 0.95},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1.15},
+                {TOOLPROPERTIES::ACCURACY, 0.95},
             },
             {TRAIT::TWILIT, TRAIT::VEILED}
         }},
@@ -1432,8 +1489,8 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
     { MATERIAL::FEATHER, {
         { TOOLPART::FLETCHLING, {
             {
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
-            {TOOLPROPERTIES::ACCURACY, 1},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1},
+                {TOOLPROPERTIES::ACCURACY, 1},
             },
             {}
         }},
@@ -1441,8 +1498,8 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
     { MATERIAL::SLIMELEAF, {
         { TOOLPART::FLETCHLING, {
             {
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1.25},
-            {TOOLPROPERTIES::ACCURACY, 0.8},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1.25},
+                {TOOLPROPERTIES::ACCURACY, 0.8},
             },
             {}
         }},
@@ -1450,8 +1507,8 @@ map<MATERIAL, map<TOOLPART, pair<map<TOOLPROPERTIES, double>, vector<TRAIT>>>> m
     { MATERIAL::LEAF, {
         { TOOLPART::FLETCHLING, {
             {
-            {TOOLPROPERTIES::DURABILITYMODIFIER, 1.5},
-            {TOOLPROPERTIES::ACCURACY, 0.5},
+                {TOOLPROPERTIES::DURABILITYMODIFIER, 1.5},
+                {TOOLPROPERTIES::ACCURACY, 0.5},
             },
             {}
         }},
@@ -1576,8 +1633,14 @@ void initializeInverseMaps()
     for(auto keyValue : stringToToolPart)
         toolPartToString[keyValue.second] = keyValue.first;
     for(auto keyValue : stringToMaterial)
-        materialToString[keyValue.second] = keyValue.first;
+    {
+        string s = keyValue.first;
+        s[0] = toupper(s[0]);
+        materialToString[keyValue.second] = s;
+    }
     materialToString[MATERIAL::LEAF] = "LeaF";
     for(auto keyValue : stringToOptimTarget)
         optimTargetToString[keyValue.second] = keyValue.first;
+    for(auto keyValue : stringToTrait)
+        traitToString[keyValue.second] = keyValue.first;
 }
