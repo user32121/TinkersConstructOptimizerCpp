@@ -368,8 +368,15 @@ map<string, TRAIT> stringToTrait = {
 };
 map<TRAIT, string> traitToString;
 
-//tool properties
+map<string, int> stringToBlockLevel = {
+    {"Stone",1},
+    {"Iron",2},
+    {"Diamond",3},
+    {"Obsidian",4},
+    {"Cobalt",5},
+};
 
+//tool properties
 map<TOOL, vector<namedToolPart*>*> toolToToolparts = {
     { TOOL::PICKAXE, new vector<namedToolPart*> {
         new namedToolPart {"Tool Rod", {TOOLPART::HANDLE}},
